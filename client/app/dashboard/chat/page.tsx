@@ -51,39 +51,75 @@ export default function ChatPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-[#0a0a14] text-white overflow-hidden">
-      <div className="flex-1 overflow-y-auto p-4 md:p-8 space-y-6 bg-[#0a0a14]">
+    // h-[calc(100vh-64px)] mobile header ke liye jagah chhodne ke liye (agar layout mein header hai)
+    <div className="flex flex-col h-[calc(100vh-4rem)] lg:h-screen bg-[#0a0a14] text-white overflow-hidden">
+      
+      {/* Chat Messages Area */}
+      <div className="flex-1 overflow-y-auto p-3 md:p-8 space-y-4 md:space-y-6">
         {isFetching ? (
-          <div className="flex items-center justify-center h-full"><Loader2 className="w-8 h-8 animate-spin text-indigo-500" /></div>
+          <div className="flex items-center justify-center h-full">
+            <Loader2 className="w-8 h-8 animate-spin text-indigo-500" />
+          </div>
         ) : messages.length === 0 ? (
-          <div className="flex flex-col items-center justify-center h-full text-slate-500 opacity-20">
-            <Bot className="w-16 h-16 mb-4" />
-            <p className="text-xl font-medium">How can I help {userName} today?</p>
+          <div className="flex flex-col items-center justify-center h-full text-slate-500 opacity-40 px-6 text-center">
+            <Bot className="w-12 h-12 md:w-16 md:h-16 mb-4" />
+            <p className="text-lg md:text-xl font-medium leading-tight">
+              Kaise ho {userName}? <br/> Main aaj aapki kya madad kar sakta hoon?
+            </p>
           </div>
         ) : (
-          <div className="max-w-4xl mx-auto space-y-6 pb-10">
+          <div className="max-w-4xl mx-auto space-y-4 md:space-y-6 pb-4">
             {messages.map((m, i) => (
               <div key={i} className={`flex ${m.role === "user" ? "justify-end" : "justify-start"}`}>
-                <div className={`flex gap-4 max-w-[85%] ${m.role === "user" ? "flex-row-reverse" : ""}`}>
-                  <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${m.role === "user" ? "bg-indigo-600" : "bg-[#1e1e30] border border-slate-700"}`}>
-                    {m.role === "user" ? <User className="w-5 h-5" /> : <Bot className="w-5 h-5 text-indigo-400" />}
+                <div className={`flex gap-2 md:gap-4 max-w-[95%] md:max-w-[85%] ${m.role === "user" ? "flex-row-reverse" : ""}`}>
+                  {/* Avatar - Mobile par chota */}
+                  <div className={`flex-shrink-0 w-8 h-8 md:w-9 md:h-9 rounded-lg md:rounded-xl flex items-center justify-center ${m.role === "user" ? "bg-indigo-600" : "bg-[#1e1e30] border border-slate-700"}`}>
+                    {m.role === "user" ? <User className="w-4 h-4 md:w-5 md:h-5" /> : <Bot className="w-4 h-4 md:w-5 md:h-5 text-indigo-400" />}
                   </div>
-                  <div className={`p-4 rounded-2xl text-[15px] ${m.role === "user" ? "bg-indigo-600 rounded-tr-none" : "bg-[#16162a] border border-slate-800 rounded-tl-none"}`}>
+                  
+                  {/* Bubble - Responsive Text & Padding */}
+                  <div className={`p-3 md:p-4 rounded-2xl text-sm md:text-[15px] shadow-sm ${
+                    m.role === "user" 
+                    ? "bg-indigo-600 rounded-tr-none text-white" 
+                    : "bg-[#16162a] border border-slate-800 rounded-tl-none text-slate-200"
+                  }`}>
                     {m.content}
                   </div>
                 </div>
               </div>
             ))}
+            {loading && (
+              <div className="flex justify-start">
+                <div className="flex gap-2 md:gap-4 items-center bg-[#16162a] border border-slate-800 p-3 rounded-2xl rounded-tl-none">
+                  <Loader2 className="w-4 h-4 animate-spin text-indigo-500" />
+                  <span className="text-xs text-slate-400 font-medium">Nexus is thinking...</span>
+                </div>
+              </div>
+            )}
             <div ref={scrollRef} />
           </div>
         )}
       </div>
-      <div className="p-4 md:p-8 bg-[#0a0a14] border-t border-slate-800/30">
-        <div className="max-w-4xl mx-auto relative">
-          <input className="w-full bg-[#111122] border border-slate-800 rounded-2xl py-4 pl-6 pr-16 outline-none" placeholder="Ask anything..." value={input} onChange={(e) => setInput(e.target.value)} onKeyDown={(e) => e.key === "Enter" && onSend()} />
-          <button onClick={onSend} disabled={loading || !input.trim()} className="absolute right-2 top-2 bottom-2 px-5 bg-indigo-600 rounded-xl">
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-          </button>
+
+      {/* Input Area - Mobile Friendly */}
+      <div className="p-3 md:p-6 bg-[#0a0a14] border-t border-slate-800/30">
+        <div className="max-w-4xl mx-auto relative flex items-center gap-2">
+          <div className="relative flex-1">
+            <input 
+              className="w-full bg-[#111122] border border-slate-800 rounded-xl md:rounded-2xl py-3 md:py-4 pl-4 pr-12 md:pl-6 md:pr-16 outline-none focus:border-indigo-500 transition-all text-sm md:text-base" 
+              placeholder="Ask anything..." 
+              value={input} 
+              onChange={(e) => setInput(e.target.value)} 
+              onKeyDown={(e) => e.key === "Enter" && onSend()} 
+            />
+            <button 
+              onClick={onSend} 
+              disabled={loading || !input.trim()} 
+              className="absolute right-1.5 top-1.5 bottom-1.5 px-3 md:px-5 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg md:rounded-xl transition-colors disabled:opacity-50"
+            >
+              {loading ? <Loader2 className="w-4 h-4 md:w-5 md:h-5 animate-spin" /> : <Send className="w-4 h-4 md:w-5 md:h-5" />}
+            </button>
+          </div>
         </div>
       </div>
     </div>

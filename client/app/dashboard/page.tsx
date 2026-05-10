@@ -29,27 +29,36 @@ export default function Dashboard() {
   ];
 
   return (
-    <div className="p-8 space-y-8 min-h-screen bg-background text-foreground transition-colors duration-300">
-      <div className="bg-card p-10 rounded-[2rem] border border-border shadow-xl shadow-indigo-500/5">
-        <h1 className="text-5xl font-black mb-3 tracking-tighter">Dashboard</h1>
-        <p className="text-muted-foreground text-lg font-medium">
-          Welcome back, <span className="text-indigo-600 font-bold">{user.name}</span>! Ready for some AI magic?
+    // Mobile par p-4, badi screen par p-8
+    <div className="p-4 md:p-8 space-y-6 md:space-y-8 min-h-screen bg-background text-foreground transition-colors duration-300">
+      
+      {/* Welcome Card - Responsive Padding & Font */}
+      <div className="bg-card p-6 md:p-10 rounded-2xl md:rounded-[2rem] border border-border shadow-xl shadow-indigo-500/5">
+        <h1 className="text-3xl md:text-5xl font-black mb-2 md:mb-3 tracking-tighter">Dashboard</h1>
+        <p className="text-muted-foreground text-sm md:text-lg font-medium leading-tight">
+          Welcome back, <span className="text-indigo-600 font-bold">{user.name}</span>! <br className="md:hidden" /> Ready for some AI magic?
         </p>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+      {/* Grid - Mobile par 1 column, Medium (md) screen se 3 columns */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {cards.map((card) => (
           <div 
             key={card.name}
             onClick={() => router.push(card.path)}
-            className="bg-card p-8 rounded-3xl border border-border hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer group flex flex-col"
+            className="bg-card p-6 md:p-8 rounded-2xl md:rounded-3xl border border-border hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer group flex flex-col"
           >
-            <div className={`w-14 h-14 ${card.bg} rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform`}>
-              <card.icon className={`w-8 h-8 ${card.color}`} />
+            {/* Icon - Mobile par thoda chota */}
+            <div className={`w-12 h-12 md:w-14 md:h-14 ${card.bg} rounded-xl md:rounded-2xl flex items-center justify-center mb-4 md:mb-6 group-hover:scale-110 transition-transform`}>
+              <card.icon className={`w-6 h-6 md:w-8 md:h-8 ${card.color}`} />
             </div>
-            <h3 className="text-2xl font-black mb-2 tracking-tight">{card.name} ✨</h3>
-            <p className="text-muted-foreground text-sm font-medium mb-6 leading-relaxed">{card.desc}</p>
-            <div className="mt-auto flex items-center text-indigo-600 font-bold text-xs uppercase tracking-widest gap-2">
+
+            <h3 className="text-xl md:text-2xl font-black mb-2 tracking-tight">{card.name} ✨</h3>
+            <p className="text-muted-foreground text-xs md:text-sm font-medium mb-6 leading-relaxed">
+              {card.desc}
+            </p>
+
+            <div className="mt-auto flex items-center text-indigo-600 font-bold text-[10px] md:text-xs uppercase tracking-widest gap-2">
               Launch Tool <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
             </div>
           </div>
