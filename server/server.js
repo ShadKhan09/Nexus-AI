@@ -1,51 +1,46 @@
-import express from 'express';
-import mongoose from 'mongoose';
-import cors from 'cors';
-import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
+import express from "express";
+import mongoose from "mongoose";
+import cors from "cors";
+import dotenv from "dotenv";
+import cookieParser from "cookie-parser";
 
-import chatRoutes from './src/routes/chatRoutes.js';
-import imageRoutes from './src/routes/imageRoutes.js';
-import analyticsRoutes from './src/routes/analyticsRoutes.js';
-import authRoutes from './src/routes/authRoutes.js';
+import chatRoutes from "./src/routes/chatRoutes.js";
+import imageRoutes from "./src/routes/imageRoutes.js";
+import analyticsRoutes from "./src/routes/analyticsRoutes.js";
+import authRoutes from "./src/routes/authRoutes.js";
 
 dotenv.config();
 const app = express();
 
 app.use(cookieParser());
 
-const allowedOrigins = [
-  'http://localhost:3000',
-  process.env.FRONTEND_URL
-];
+// --- Naya Simple CORS jo sabko allow karega ---
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization", "Cookie"],
+  }),
+);
 
-app.use(cors({
-  origin: function (origin, callback) {
-    if (!origin || allowedOrigins.indexOf(origin) !== -1) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  credentials: true,
-  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "Cookie"]
-}));
+app.use(express.json({ limit: "10mb" }));
 
-app.use(express.json({ limit: '10mb' }));
-
-app.get('/', (req, res) => {
-  res.status(200).json({ status: "success", message: "Nexus AI Server is live" });
+app.get("/", (req, res) => {
+  res
+    .status(200)
+    .json({ status: "success", message: "Nexus AI Server is live" });
 });
 
-app.use('/chat', chatRoutes);
-app.use('/image', imageRoutes);
-app.use('/analytics', analyticsRoutes);
-app.use('/auth', authRoutes);
+app.use("/chat", chatRoutes);
+app.use("/image", imageRoutes);
+app.use("/analytics", analyticsRoutes);
+app.use("/auth", authRoutes);
 
 const PORT = process.env.PORT || 5000;
 
-mongoose.connect(process.env.MONGO_URI)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => {
     app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
   })
